@@ -1,0 +1,25 @@
+{
+    "name": "vscode-princess",
+    "displayName": "vscode-Princess",
+    "description": "Syntax highlighter for the Princess language",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.49.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "princess",
+            "aliases": ["Princess", "princess"],
+            "extensions": [".pr"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "princess",
+            "scopeName": "source.princess",
+            "path": "./syntaxes/princess.tmLanguage.json"
+        }]
+    }
+}

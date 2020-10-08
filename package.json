@@ -3,6 +3,11 @@
     "displayName": "vscode-Princess",
     "description": "Syntax highlighter for the Princess language",
     "version": "0.0.1",
+    "publisher": "vicnightfall",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Victorious3/vscode-princess.git"
+    },
     "engines": {
         "vscode": "^1.49.0"
     },

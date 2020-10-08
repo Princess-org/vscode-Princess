@@ -22,6 +22,13 @@
 			"match": "\\b([A-z_][0-9A-z_]*)(?=\\()"
 		},
 		{
+			"match": "(def)\\s*([A-z_][0-9A-z_]*)",
+			"captures": {
+				"1": { "name": "storage.type.princess" },
+				"2": { "name": "entity.name.function.princess" }
+			}
+		},
+		{
 			"name": "variable.name.princess",
 			"match": "\\b([A-z_][0-9A-z_]*)\\b"
 		}
@@ -40,7 +47,7 @@
 		"storage": {
 			"patterns": [{
 				"name": "storage.type.princess",
-				"match": "\\b(struct|enum|var|let|const|def)\\b"
+				"match": "\\b(struct|enum|var|let|const)\\b"
 			}, {
 				"name": "storage.type.built-in.princess",
 				"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"
@@ -121,13 +128,32 @@
 				"match": "\\b(null)\\b"
 			}]
 		},
-		"strings": {
-			"name": "string.quoted.double.princess",
-			"begin": "\"",
-			"end": "\"",
+		"escapes": {
 			"patterns": [{
 				"name": "constant.character.escape.princess",
+				"match": "\\\\x[F-a0-9]{2}"
+			}, {
+				"name": "constant.character.escape.princess",
+				"match": "\\\\u[F-a0-9]{4}"
+			}, {
+				"name": "constant.character.escape.princess",
+				"match": "\\\\U[F-a0-9]{8}"
+			}, {
+				"name": "constant.character.escape.princess",
 				"match": "\\\\."
+			}]
+		},
+		"strings": {
+			"patterns": [{
+				"name": "string.quoted.double.princess",
+				"begin": "\"",
+				"end": "\"",
+				"patterns": [{ "include": "#escapes" }]
+			}, {
+				"name": "string.quoted.single.princess",
+				"begin": "'",
+				"end": "'",
+				"patterns": [{ "include": "#escapes" }]
 			}]
 		}
 	},

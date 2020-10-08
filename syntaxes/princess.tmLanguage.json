@@ -22,7 +22,7 @@
 			"match": "\\b([A-z_][0-9A-z_]*)(?=\\()"
 		},
 		{
-			"match": "(def)\\s*([A-z_][0-9A-z_]*)",
+			"match": "\\b(def)\\b\\s*([A-z_][0-9A-z_]*)",
 			"captures": {
 				"1": { "name": "storage.type.princess" },
 				"2": { "name": "entity.name.function.princess" }

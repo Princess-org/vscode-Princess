@@ -15,22 +15,15 @@
 		},
 		{
 			"name": "entity.name.type.princess",
-			"match": "\\b([A-z_][0-9A-z_]*)(?=::)"
+			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b(?=::)"
 		},
 		{
 			"name": "entity.name.function.princess",
-			"match": "\\b([A-z_][0-9A-z_]*)(?=\\()"
-		},
-		{
-			"match": "\\b(def)\\b\\s*([A-z_][0-9A-z_]*)",
-			"captures": {
-				"1": { "name": "storage.type.princess" },
-				"2": { "name": "entity.name.function.princess" }
-			}
+			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)(?=\\()"
 		},
 		{
 			"name": "variable.name.princess",
-			"match": "\\b([A-z_][0-9A-z_]*)\\b"
+			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
 		}
 	],
 	"repository": {
@@ -47,7 +40,7 @@
 		"storage": {
 			"patterns": [{
 				"name": "storage.type.princess",
-				"match": "\\b(struct|enum|var|let|const)\\b"
+				"match": "\\b(struct|enum|var|let|const|def)\\b"
 			}, {
 				"name": "storage.type.built-in.princess",
 				"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"
@@ -55,6 +48,9 @@
 		},
 		"keywords": {
 			"patterns": [{
+				"name": "keyword.control.princess",
+				"match": "#[A-Za-z_][0-9A-Za-z_]*"
+			}, {
 				"name": "keyword.control.princess",
 				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue)\\b"
 			}, {

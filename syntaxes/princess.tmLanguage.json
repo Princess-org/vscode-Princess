@@ -62,13 +62,13 @@
 				"match": "\\b(export|import)\\b"
 			}, {
 				"name": "keyword.other.type.princess",
-				"match": "\\b(type)\\b"
+				"match": "\\b(type|defined)\\b"
 			}]
 		},
 		"operators" : {
 			"patterns": [{
 				"name": "keyword.operator.sizeof.princess",
-				"match": "\\b(size_of)\\b"
+				"match": "\\b(size_of|align_of)\\b"
 			}, {
 				"name": "keyword.operator.arrow.princess",
 				"match": "->"

@@ -52,7 +52,7 @@
 				"match": "#[A-Za-z_][0-9A-Za-z_]*"
 			}, {
 				"name": "keyword.control.princess",
-				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue)\\b"
+				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue|defer)\\b"
 			}, {
 				"name": "keyword.control.share.princess",
 				"match": "\\b(export|import)\\b"

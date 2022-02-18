@@ -40,7 +40,7 @@
 		"storage": {
 			"patterns": [{
 				"name": "storage.type.princess",
-				"match": "\\b(struct|enum|var|let|const|def)\\b"
+				"match": "\\b(struct|enum|var|let|const|def|interface)\\b"
 			}, {
 				"name": "storage.type.built-in.princess",
 				"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"

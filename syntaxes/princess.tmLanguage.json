@@ -122,6 +122,9 @@
 			}, {
 				"name": "constant.language.null.princess",
 				"match": "\\b(null)\\b"
+			}, {
+				"name": "constant.language.undef.princess",
+				"match": "\\b(undef)\\b"
 			}]
 		},
 		"escapes": {

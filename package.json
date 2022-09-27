@@ -1,7 +1,7 @@
 {
     "name": "vscode-princess",
-    "displayName": "vscode-Princess",
-    "description": "Syntax highlighter for the Princess language",
+    "displayName": "Princess",
+    "description": "Extension for the Princess language",
     "version": "0.0.1",
     "publisher": "vicnightfall",
     "repository": {
@@ -9,16 +9,32 @@
         "url": "https://github.com/Victorious3/vscode-princess.git"
     },
     "engines": {
-        "vscode": "^1.49.0"
+        "vscode": "^1.63.0"
     },
     "categories": [
         "Programming Languages"
     ],
+    "main": "./client/out/extension",
     "contributes": {
+        "configuration": {
+            "title": "Princess",
+            "properties": {
+                "princess.compilerPath": {
+                    "type": ["string", "null"],
+                    "default": null,
+                    "description": "Path to the Princess compiler"
+                }
+            }
+        },
         "languages": [{
             "id": "princess",
-            "aliases": ["Princess", "princess"],
-            "extensions": [".pr"],
+            "aliases": [
+                "Princess",
+                "princess"
+            ],
+            "extensions": [
+                ".pr"
+            ],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
@@ -26,5 +42,22 @@
             "scopeName": "source.princess",
             "path": "./syntaxes/princess.tmLanguage.json"
         }]
+    },
+    "activationEvents": [
+        "onLanguage:princess"
+    ],
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -b",
+        "watch": "tsc -b -w",
+        "lint": "eslint ./client/src --ext .ts,.tsx",
+        "postinstall": "cd client && npm install && cd .."
+    },
+    "devDependencies": {
+        "@types/node": "^16.11.7",
+        "@typescript-eslint/eslint-plugin": "^5.30.0",
+        "@typescript-eslint/parser": "^5.30.0",
+        "eslint": "^8.13.0",
+        "typescript": "^4.7.2"
     }
 }

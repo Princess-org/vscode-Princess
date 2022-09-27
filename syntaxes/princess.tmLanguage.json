@@ -34,7 +34,10 @@
 			}, {
 				"name": "comment.block.princess",
 				"begin": "\\/\\*",
-				"end": "\\*\\/"
+				"end": "\\*\\/",
+				"patterns": [
+					{ "include": "#comment" }
+				]
 			}]
 		},
 		"storage": {
@@ -144,6 +147,11 @@
 		},
 		"strings": {
 			"patterns": [{
+				"name": "string.quoted.triple.princess",
+				"begin": "\"\"\"",
+				"end": "\"\"\"",
+				"patterns": [{ "include": "#escapes" }]
+			}, {
 				"name": "string.quoted.double.princess",
 				"begin": "\"",
 				"end": "\"",

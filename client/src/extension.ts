@@ -17,15 +17,14 @@ export function activate(context: ExtensionContext) {
 	log.appendLine("Starting Princess Extension")
 
     let config = workspace.getConfiguration()
-    let workspaceFolder = config.get("princess.compilerPath") as string
+    let compilerPath = config.get("princess.compilerPath") as string
 
     let runCommand = "princess"
     let debugCommand = "princess2"
-    if (workspaceFolder != undefined) {
-        runCommand = path.join(workspaceFolder, "bin", runCommand)
-        debugCommand = path.join(workspaceFolder, "bin", debugCommand)
+    if (compilerPath != undefined) {
+        runCommand = path.join(compilerPath, "bin", runCommand)
+        debugCommand = path.join(compilerPath, "bin", debugCommand)
     }
-
 	const serverOptions: ServerOptions = {
 		run: { command: runCommand, transport: TransportKind.stdio, args: ["--language-server"] },
 		debug: { command: debugCommand, transport: TransportKind.stdio, args: ["--language-server"] }

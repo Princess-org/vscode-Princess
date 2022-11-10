@@ -20,28 +20,35 @@
             "title": "Princess",
             "properties": {
                 "princess.compilerPath": {
-                    "type": ["string", "null"],
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "default": null,
                     "description": "Path to the Princess compiler"
                 }
             }
         },
-        "languages": [{
-            "id": "princess",
-            "aliases": [
-                "Princess",
-                "princess"
-            ],
-            "extensions": [
-                ".pr"
-            ],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "princess",
-            "scopeName": "source.princess",
-            "path": "./syntaxes/princess.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "princess",
+                "aliases": [
+                    "Princess",
+                    "princess"
+                ],
+                "extensions": [
+                    ".pr"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "princess",
+                "scopeName": "source.princess",
+                "path": "./syntaxes/princess.tmLanguage.json"
+            }
+        ]
     },
     "activationEvents": [
         "onLanguage:princess"

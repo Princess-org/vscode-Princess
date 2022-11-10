@@ -11,12 +11,12 @@ function activate(context) {
     log.show();
     log.appendLine("Starting Princess Extension");
     let config = vscode_1.workspace.getConfiguration();
-    let workspaceFolder = config.get("princess.compilerPath");
+    let compilerPath = config.get("princess.compilerPath");
     let runCommand = "princess";
     let debugCommand = "princess2";
-    if (workspaceFolder != undefined) {
-        runCommand = path.join(workspaceFolder, "bin", runCommand);
-        debugCommand = path.join(workspaceFolder, "bin", debugCommand);
+    if (compilerPath != undefined) {
+        runCommand = path.join(compilerPath, "bin", runCommand);
+        debugCommand = path.join(compilerPath, "bin", debugCommand);
     }
     const serverOptions = {
         run: { command: runCommand, transport: node_1.TransportKind.stdio, args: ["--language-server"] },

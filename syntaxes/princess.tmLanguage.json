@@ -3,30 +3,118 @@
 	"name": "Princess",
 	"patterns": [
 		{ "include": "#comment" },
+		{ "include": "#type-decl"},
+		{ "include": "#function"},
 		{ "include": "#storage" },
 		{ "include": "#keywords" },
 		{ "include": "#operators" },
 		{ "include": "#strings" },
 		{ "include": "#numbers"},
 		{ "include": "#constants"},
-		{
-			"name": "entity.name.type.princess",
-			"match": "\\b([A-Z][a-z0-9]+)((\\d)|([A-Z0-9][a-z0-9]+))*([A-Z])?\\b"
-		},
-		{
-			"name": "entity.name.type.princess",
-			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b(?=::[^\\(])"
-		},
-		{
-			"name": "entity.name.function.princess",
-			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)(?=\\()"
-		},
-		{
-			"name": "variable.name.princess",
-			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
-		}
+		{ "include": "#identifier"}
 	],
 	"repository": {
+		"identifier": {
+			"name": "variable.name.princess",
+			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+		},
+		"pragma": {
+			"name": "keyword.control.princess",
+			"match": "#[A-Za-z_][0-9A-Za-z_]*"
+		},
+		"function": {
+			"name": "meta.function.princess",
+			"begin": "(\\s*(export)|\\s*(import))*\\s*(def)\\s*",
+			"beginCaptures": {
+				"2": {"name": "keyword.control.share.princess"},
+				"3": {"name": "keyword.control.share.princess"},
+				"4": {"name": "storage.type.princess"}
+			},
+			"patterns": [
+				{"include": "#pragma" },
+				{
+					"name": "entity.name.function",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+				},
+				{
+					"begin": "{",
+					"end": "}"
+				},
+				{
+					"begin": "(",
+					"end": ")"
+				}
+			],
+			"end": "(?=\\n)|;"
+		},
+		"type": {
+			"patterns": [
+				{
+					"name": "meta.struct.princess",
+					"begin": "\\b(struct)\\b\\s*{",
+					"beginCaptures": {
+						"1": {"name": "storage.type.princess"}
+					},
+					"patterns": [
+						{
+							"begin": "[^:},]",
+							"patterns": [
+								{"include": "#identifier"}
+							],
+							"end": "(?=\\n|:|})"
+						}, {
+							"begin": "(:)\\s*",
+							"beginCaptures": {
+								"1": {"name": "punctuation.other.colon.princess"}
+							},
+							"patterns": [
+								{"include": "#type"}
+							],
+							"end": "(?=\\n|;|,)"
+						}
+					],
+					"end": "}"
+				}, {
+					"name": "entity.name.type.princess", 
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+				}
+			]
+		},
+		"comma-separator": {
+			"begin": "(,)\\s*", 
+			"beginCaptures": {
+				"1": {"name": "punctuation.other.comma.princess"}
+			},
+			"end": "(?=[^\\n])"
+		},
+		"type-decl": {
+			"name": "meta.typedecl.princess",
+			"begin": "type",
+			"beginCaptures": {
+				"0": {"name": "keyword.other.type.princess"}
+			},
+			"patterns": [
+				{
+					"begin": "[^=]",
+					"patterns": [
+						{"include": "#identifier"},
+						{"include": "#comma-separator"}
+					],
+					"end": "(?=\\n)|(?==)"
+				}, {
+					"begin": "=",
+					"beginCaptures": {
+						"0": {"name": "punctuation.other.equals.princess"}
+					},
+					"patterns": [
+						{"include": "#type"},
+						{"include": "#comma-separator"}
+					],
+					"end": "(?=\\n|;)"
+				}
+			],
+			"end": "(?=\\n|;)"
+		},
 		"comment": {
 			"patterns": [{
 				"name": "comment.line.double-dash.princess",
@@ -51,9 +139,6 @@
 		},
 		"keywords": {
 			"patterns": [{
-				"name": "keyword.control.princess",
-				"match": "#[A-Za-z_][0-9A-Za-z_]*"
-			}, {
 				"name": "keyword.control.princess",
 				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue|defer|assert|as)\\b"
 			}, {

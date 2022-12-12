@@ -26,8 +26,8 @@ export function activate(context: ExtensionContext) {
         debugCommand = path.join(compilerPath, "bin", debugCommand)
     }
 	const serverOptions: ServerOptions = {
-		run: { command: runCommand, transport: TransportKind.stdio, args: ["--language-server"] },
-		debug: { command: debugCommand, transport: TransportKind.stdio, args: ["--language-server"] }
+		run: { command: runCommand, transport: TransportKind.stdio, args: ["--language-server", "--no-incremental"] },
+		debug: { command: debugCommand, transport: TransportKind.stdio, args: ["--language-server", "--no-incremental"] }
 	}
 
 	// Options to control the language client

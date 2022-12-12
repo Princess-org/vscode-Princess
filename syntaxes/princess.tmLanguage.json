@@ -2,81 +2,296 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "Princess",
 	"patterns": [
-		{ "include": "#comment" },
-		{ "include": "#type-decl"},
-		{ "include": "#function"},
-		{ "include": "#storage" },
-		{ "include": "#keywords" },
-		{ "include": "#operators" },
-		{ "include": "#strings" },
-		{ "include": "#numbers"},
-		{ "include": "#constants"},
-		{ "include": "#identifier"}
+		{ "include": "#statement" }
 	],
 	"repository": {
+		"statement": {
+			"patterns": [
+				{ "include": "#type-decl" },
+				{ "include": "#const-decl" },
+				{ "include": "#var-decl" },
+				{ "include": "#function-decl" },
+				{ "include": "#import" },
+				{ "include": "#expression" }
+			]
+		},
+		"expression": {
+			"patterns": [
+				{ "include": "#comment" },
+				{ "include": "#function-call" },
+				{ "include": "#storage" },
+				{ "include": "#keywords" },
+				{ "include": "#operators" },
+				{ "include": "#strings" },
+				{ "include": "#numbers" },
+				{ "include": "#constants" },
+				{ "include": "#builtin-types"}, 
+				{ "include": "#identifier" }
+			]
+		},
 		"identifier": {
-			"name": "variable.name.princess",
-			"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+			"match": "\\b(([A-Za-z_][0-9A-Za-z_]*)(::))*([A-Za-z_][0-9A-Za-z_]*)\\b",
+			"captures": {
+				"2": {"name": "entity.name.namespace.princess"},
+				"3": {"name": "punctuation.other.doublecolon.princess"},
+				"4": {"name": "variable.name.princess"}
+			}
+		},
+		"function-call": {
+			"begin": "\\b(([A-Za-z_][0-9A-Za-z_]*)(::))*([A-Za-z_][0-9A-Za-z_]*)\\b\\(",
+			"end": "\\)",
+			"beginCaptures": {
+				"2": {"name": "entity.name.namespace.princess"},
+				"3": {"name": "punctuation.other.doublecolon.princess"},
+				"4": {"name": "entity.name.function.princess"}
+			},
+			"patterns": [
+				{"include": "#expression"},
+				{"include": "#comma-separator"}
+			]
+		},
+		"builtin-types": {
+			"name": "storage.type.built-in.princess",
+			"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"
+		},
+		"type-name": {
+			"patterns": [
+				{
+					"name": "storage.type.built-in.princess",
+					"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"
+				}, {
+					"name": "entity.name.type.princess",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+				}
+			]
 		},
 		"pragma": {
 			"name": "keyword.control.princess",
-			"match": "#[A-Za-z_][0-9A-Za-z_]*"
+			"match": "#[A-Za-z_][0-9A-Za-z_]++"
 		},
-		"function": {
+		"function-arguments": {
+			"begin": "\\(",
+			"patterns": [
+				{"include": "#expression"}
+			],
+			"end": "\\)"
+		},
+		"function-decl": {
 			"name": "meta.function.princess",
-			"begin": "(\\s*(export)|\\s*(import))*\\s*(def)\\s*",
+			"begin": "\\s*(export)?\\s*(import)?\\s*(def)\\s*",
 			"beginCaptures": {
+				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},
-				"3": {"name": "keyword.control.share.princess"},
-				"4": {"name": "storage.type.princess"}
+				"3": {"name": "storage.type.princess"}
 			},
 			"patterns": [
-				{"include": "#pragma" },
 				{
+					"match": "(?<inner>([^\\(\\)\"]+|\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\")*){0}([A-Za-z#_][A-Za-z_0-9]++)\\s*(?<paren>\\g<inner>?+|(\\(\\g<inner>\\g<paren>\\g<inner>\\))++)(?=\\s*[A-Za-z#_][A-Za-z_0-9]*\\s*)",
+					"captures": {
+						"4": { "name": "keyword.control.macro.princess" },
+						"5": {
+							"patterns": [
+								{"include": "#function-arguments"}
+							]
+						}
+					}
+				}, {
+					"include": "#pragma"
+				}, {
+					"name": "keyword.control.macro.princess",
+					"match": "([A-Za-z_][A-Za-z_0-9]*)++(?=\\s*[A-Za-z_][0-9A-Za-z_]*)"
+				}, {
 					"name": "entity.name.function",
 					"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
-				},
-				{
+				}, {
+					"name": "meta.function.arguments.princess",
+					"begin": "\\(",
+					"patterns": [
+						{ 
+							"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b(?=\\s*:)",
+							"captures": {
+								"0": { "name": "variable.parameter.princess" }
+							}
+						}, {
+							"begin": ":",
+							"beginCaptures": {
+								"1": {"name": "punctuation.other.colon.princess"}
+							},
+							"patterns": [
+								{"include": "#type"},
+								{"include": "#comment"}
+							],
+							"end": "(,)|(=)|(?=\\))",
+							"endCaptures": {
+								"0": {"name": "punctuation.other.comma.princess"},
+								"1": {"name": "keyword.operator.assignment.princess"}
+							}
+						}, {
+							"begin": "(?<==)",
+							"end": "(?=\\))|,",
+							"patterns": [
+								{"include": "#expression"}
+							]
+						}, {
+							"include": "#expression"
+						}
+					],
+					"end": "\\)"
+				}, {
+					"begin": "->",
+					"end": "(?={|\\n)",
+					"beginCaptures": {
+						"0": {"name": "punctuation.other.arrow"}
+					},
+					"patterns": [
+						{"include": "#type"}
+					]
+				}, {
+					"name": "meta.function.body.princess",
 					"begin": "{",
+					"patterns": [
+						{ "include": "#statement" }
+					],
 					"end": "}"
-				},
-				{
-					"begin": "(",
-					"end": ")"
 				}
 			],
 			"end": "(?=\\n)|;"
 		},
+		"const-decl": {
+			"begin": "\\s*(export)?\\s*(import)?\\s*(const)\\s*",
+			"end": "\\n|;",
+			"beginCaptures": {
+				"1": {"name": "keyword.control.share.princess"},
+				"2": {"name": "keyword.control.share.princess"},
+				"3": {"name": "storage.type.const.princess"}
+			},
+			"patterns": [
+				{
+					"name": "variable.other.constant",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+				}, {
+					"include": "#pragma"
+				}, {
+					"begin": ":",
+					"beginCaptures": { 
+						"0": {"name": "punctuation.other.colon.princess"}
+					},
+					"patterns": [
+						{"include": "#type"}
+					],
+					"end": "(?=\\n|=)"
+				}, {
+					"begin": "=",
+					"beginCaptures": { 
+						"0": {"name": "keyword.operator.assignment.princess"}
+					},
+					"patterns": [
+						{"include": "#expression"}
+					],
+					"end": "(?=\\n|;)"
+				}
+			]
+		},
+		"var-decl": {
+			"begin": "\\s*(export)?\\s*(import)?\\s*((var)|(let))\\s*",
+			"end": "\\n|;",
+			"beginCaptures": {
+				"1": {"name": "keyword.control.share.princess"},
+				"2": {"name": "keyword.control.share.princess"},
+				"4": {"name": "storage.type.var.princess"},
+				"5": {"name": "storage.type.let.princess"}
+			},
+			"patterns": [
+				{
+					"name": "variable.other.princess",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+				}, {
+					"include": "#pragma"
+				}, {
+					"begin": ":",
+					"beginCaptures": { 
+						"0": {"name": "punctuation.other.colon.princess"}
+					},
+					"patterns": [
+						{"include": "#type"}
+					],
+					"end": "(?=\\n|=)"
+				}, {
+					"begin": "=",
+					"beginCaptures": { 
+						"0": {"name": "keyword.operator.assignment.princess"}
+					},
+					"patterns": [
+						{"include": "#expression"}
+					],
+					"end": "(?=\\n|;)"
+				}
+			]
+		},
+		"import": {
+			"name": "meta.import.princess",
+			"begin": "\\s*(export)?\\s*(import)\\s*",
+			"end": "\\n|;",
+			"beginCaptures": {
+				"1": {"name": "keyword.control.share.princess"},
+				"2": {"name": "keyword.control.share.princess"}
+			},
+			"patterns": [
+				{
+					"match": "\\b(as)\\s*([A-Za-z_][0-9A-Za-z_]++)\\b",
+					"captures": {
+						"1": { "name": "keyword.control.as.princess" },
+						"2": { "name": "entity.name.namespace.princess" }
+					}
+				}, {
+					"name": "entity.name.namespace.princess",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+				}, {
+					"include": "#comma-separator"
+				}, {
+					"include": "#comment"
+				}
+			]
+		},
 		"type": {
 			"patterns": [
 				{
+					"include": "#comment"
+				}, {
 					"name": "meta.struct.princess",
-					"begin": "\\b(struct)\\b\\s*{",
+					"begin": "\\s*(struct)\\s*",
+					"end": "(?<=})",
 					"beginCaptures": {
 						"1": {"name": "storage.type.princess"}
 					},
 					"patterns": [
 						{
-							"begin": "[^:},]",
-							"patterns": [
-								{"include": "#identifier"}
-							],
-							"end": "(?=\\n|:|})"
+							"include": "#pragma"
 						}, {
-							"begin": "(:)\\s*",
-							"beginCaptures": {
-								"1": {"name": "punctuation.other.colon.princess"}
-							},
+							"begin": "{",
+							"end": "}",
 							"patterns": [
-								{"include": "#type"}
-							],
-							"end": "(?=\\n|;|,)"
+								{
+									"begin": ":",
+									"beginCaptures": {
+										"1": {"name": "punctuation.other.colon.princess"}
+									},
+									"patterns": [
+										{"include": "#type"}
+									],
+									"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};])"
+								}, {
+									"include": "#identifier"
+								}, {
+									"include": "#comment"
+								}
+							]
 						}
-					],
-					"end": "}"
+					]
 				}, {
-					"name": "entity.name.type.princess", 
-					"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+					"include": "#keywords"
+				}, {
+					"include": "#type-name"
 				}
 			]
 		},
@@ -89,29 +304,27 @@
 		},
 		"type-decl": {
 			"name": "meta.typedecl.princess",
-			"begin": "type",
+			"begin": "\\s*(export)?\\s*(import)?\\s*(type)\\s*",
 			"beginCaptures": {
-				"0": {"name": "keyword.other.type.princess"}
+				"1": {"name": "keyword.control.share.princess"},
+				"2": {"name": "keyword.control.share.princess"},
+				"3": {"name": "keyword.other.type.princess"}
 			},
 			"patterns": [
+				{"include": "#comma-separator"},
 				{
-					"begin": "[^=]",
-					"patterns": [
-						{"include": "#identifier"},
-						{"include": "#comma-separator"}
-					],
-					"end": "(?=\\n)|(?==)"
-				}, {
 					"begin": "=",
 					"beginCaptures": {
-						"0": {"name": "punctuation.other.equals.princess"}
+						"0": {"name": "keyword.operator.assignment.princess"}
 					},
 					"patterns": [
 						{"include": "#type"},
 						{"include": "#comma-separator"}
 					],
 					"end": "(?=\\n|;)"
-				}
+				},
+				{"include": "#keywords"},
+				{"include": "#type-name"}
 			],
 			"end": "(?=\\n|;)"
 		},
@@ -128,17 +341,11 @@
 				]
 			}]
 		},
-		"storage": {
+		"keywords": {
 			"patterns": [{
 				"name": "storage.type.princess",
 				"match": "\\b(struct|enum|var|let|const|def|interface|weak_ref)\\b"
 			}, {
-				"name": "storage.type.built-in.princess",
-				"match": "\\b(unsigned|word|bool|char|byte|short|int|long|ubyte|ushort|uint|ulong|int8|int16|int32|int64|uint8|uint16|uint32|uint64|float|double|float32|float64|size_t|string)\\b"
-			}]
-		},
-		"keywords": {
-			"patterns": [{
 				"name": "keyword.control.princess",
 				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue|defer|assert|as)\\b"
 			}, {
@@ -147,10 +354,7 @@
 			}, {
 				"name": "keyword.other.type.princess",
 				"match": "\\b(type|defined|type_of)\\b"
-			}]
-		},
-		"operators" : {
-			"patterns": [{
+			}, {
 				"name": "keyword.operator.sizeof.princess",
 				"match": "\\b(size_of|align_of)\\b"
 			}, {

@@ -10,7 +10,6 @@ function activate(context) {
     log = vscode_1.window.createOutputChannel("Princess");
     log.show();
     log.appendLine("Starting Princess Extension");
-    return;
     let config = vscode_1.workspace.getConfiguration();
     let compilerPath = config.get("princess.compilerPath");
     let runCommand = "princess";

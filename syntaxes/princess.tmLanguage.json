@@ -17,7 +17,9 @@
 		},
 		"expression": {
 			"patterns": [
+				{ "include": "#blocks"},
 				{ "include": "#comment" },
+				{ "include": "#type-ref" },
 				{ "include": "#function-call" },
 				{ "include": "#storage" },
 				{ "include": "#keywords" },
@@ -67,7 +69,7 @@
 		},
 		"pragma": {
 			"name": "keyword.control.princess",
-			"match": "#[A-Za-z_][0-9A-Za-z_]++"
+			"match": "#[A-Za-z_][0-9A-Za-z_]*+"
 		},
 		"function-arguments": {
 			"begin": "\\(",
@@ -108,7 +110,7 @@
 					"begin": "\\(",
 					"patterns": [
 						{ 
-							"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b(?=\\s*:)",
+							"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b(?=\\s*:)",
 							"captures": {
 								"0": { "name": "variable.parameter.princess" }
 							}
@@ -121,23 +123,23 @@
 								{"include": "#type"},
 								{"include": "#comment"}
 							],
-							"end": "(,)|(=)|(?=\\))",
-							"endCaptures": {
-								"0": {"name": "punctuation.other.comma.princess"},
-								"1": {"name": "keyword.operator.assignment.princess"}
-							}
+							"end": "(?=\\)|,|=)"
 						}, {
-							"begin": "(?<==)",
-							"end": "(?=\\))|,",
+							"begin": "=",
+							"beginCaptures": {
+								"0": {"name": "keyword.operator.assignment.princess"}
+							},
+							"end": "(?=\\)|,)",
 							"patterns": [
 								{"include": "#expression"}
 							]
 						}, {
-							"include": "#expression"
+							"include": "#comma-separator"
 						}
 					],
-					"end": "\\)"
+					"end": "(?=})|\\)"
 				}, {
+					"name": "meta.return-type.princess",
 					"begin": "->",
 					"end": "(?={|\\n)",
 					"beginCaptures": {
@@ -153,9 +155,11 @@
 						{ "include": "#statement" }
 					],
 					"end": "}"
+				}, {
+					"include": "#comment"
 				}
 			],
-			"end": "(?=\\n)|;"
+			"end": "(?=\\n|})|;"
 		},
 		"const-decl": {
 			"begin": "\\s*(export)?\\s*(import)?\\s*(const)\\s*",
@@ -258,6 +262,11 @@
 				{
 					"include": "#comment"
 				}, {
+					"name": "meta.type.reference.princess",
+					"begin": "\\s*&\\s*",
+					"patterns": [{"include": "#type"}],
+					"end": "(?=[\\)}\\],\\n])"
+				}, {
 					"name": "meta.struct.princess",
 					"begin": "\\s*(struct)\\s*",
 					"end": "(?<=})",
@@ -266,12 +275,16 @@
 					},
 					"patterns": [
 						{
+							"include": "#comment"
+						}, {
 							"include": "#pragma"
 						}, {
 							"begin": "{",
 							"end": "}",
 							"patterns": [
 								{
+									"include": "#comment"
+								}, {
 									"begin": ":",
 									"beginCaptures": {
 										"1": {"name": "punctuation.other.colon.princess"}
@@ -281,19 +294,105 @@
 									],
 									"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};])"
 								}, {
-									"include": "#identifier"
+									"include": "#keyword"
 								}, {
-									"include": "#comment"
+									"include": "#identifier"
 								}
 							]
 						}
 					]
+				}, {
+					"name": "meta.interface.princess",
+					"begin": "\\s*(interface)\\s*",
+					"end": "(?<=})",
+					"beginCaptures": {
+						"1": {"name": "storage.type.princess"}
+					},
+					"patterns": [
+						{
+							"include": "#comment"
+						}, {
+							"include": "#pragma"
+						}, {
+							"begin": "{",
+							"end": "}",
+							"patterns": [
+								{"include": "#comment"},
+								{"include": "#function-decl"},
+								{"include": "#keyword"}
+							]
+						}
+					]
+				}, {
+					"name": "meta.enum.princess",
+					"begin": "\\s*(enum)\\s*",
+					"end": "(?<=})",
+					"beginCaptures": {
+						"1": {"name": "storage.type.princess"}
+					},
+					"patterns": [
+						{
+							"include": "#comment"
+						}, {
+							"include": "#pragma"
+						}, {
+							"begin": "{",
+							"end": "}",
+							"patterns": [
+								{
+									"include": "#comment"
+								}, {
+									"include": "#keyword"
+								}, {
+									"name": "variable.other.enummember.princess",
+									"match": "[A-Za-z_][0-9A-Za-z_]++"
+								}, {
+									"begin": "=",
+									"patterns": [
+										{"include": "#expression"}
+									],
+									"end": "(?=(^\\s*|;)([A-Za-z_][0-9A-Za-z_]*)|[};])"
+								}
+							]
+						}
+					]
+				}, {
+					"begin": "\\[([^\\]]*);",
+					"beginCaptures": {
+						"1": {
+							"patterns": [
+								{"include": "#expression"}
+							]
+						}
+					},
+					"patterns": [
+						{"include": "#type"}
+					],
+					"end": "\\]"
+				}, {
+					"begin": "\\[",
+					"patterns": [
+						{"include": "#type"}
+					],
+					"end": "\\]"
 				}, {
 					"include": "#keywords"
 				}, {
 					"include": "#type-name"
 				}
 			]
+		},
+		"type-ref": {
+			"begin": "\\s*(type)\\s*",
+			"beginCaptures": {
+				"0": { "name": "keyword.other.type.princess" }
+			},
+			"patterns": [
+				{"include": "#comment"},
+				{"include": "#type"},
+				{"include": "#keyword"}
+			],
+			"end": "(?=[\\n\\)},])"
 		},
 		"comma-separator": {
 			"begin": "(,)\\s*", 
@@ -327,6 +426,30 @@
 				{"include": "#type-name"}
 			],
 			"end": "(?=\\n|;)"
+		},
+		"blocks": {
+			"patterns": [
+				{
+					"begin": "{",
+					"end": "}",
+					"patterns": [
+						{"include": "#expression"}
+					]
+				}, {
+					"begin": "\\[", 
+					"end": "\\]",
+					"patterns": [
+						{"include": "#comma-separator"},
+						{"include": "#expression"}
+					]
+				}, {
+					"begin": "\\(", 
+					"end": "\\)",
+					"patterns": [
+						{"include": "#expression"}
+					]
+				}
+			]
 		},
 		"comment": {
 			"patterns": [{
@@ -387,6 +510,8 @@
 			}, {
 				"name": "keyword.operator.princess",
 				"match": "%|\\*|\\/|-|\\+"
+			}, {
+				"include": "#constants"
 			}]
 		},
 		"numbers": {

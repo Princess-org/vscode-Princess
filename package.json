@@ -39,7 +39,11 @@
                 "extensions": [
                     ".pr"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/crown.svg",
+                    "dark": "./icons/crown.svg"
+                }
             }
         ],
         "grammars": [

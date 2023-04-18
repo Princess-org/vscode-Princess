@@ -11,13 +11,15 @@
 				{ "include": "#const-decl" },
 				{ "include": "#var-decl" },
 				{ "include": "#function-decl" },
+				{ "include": "#from-import" },
 				{ "include": "#import" },
 				{ "include": "#expression" }
 			]
 		},
 		"expression": {
 			"patterns": [
-				{ "include": "#blocks"},
+				{ "include": "#pragma" },
+				{ "include": "#blocks" },
 				{ "include": "#comment" },
 				{ "include": "#type-ref" },
 				{ "include": "#function-call" },
@@ -80,7 +82,7 @@
 		},
 		"function-decl": {
 			"name": "meta.function.princess",
-			"begin": "\\s*(export)?\\s*(import)?\\s*(def)\\s*",
+			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*(def)\\b",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},
@@ -88,7 +90,7 @@
 			},
 			"patterns": [
 				{
-					"match": "(?<inner>([^\\(\\)\"]+|\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\")*){0}([A-Za-z#_][A-Za-z_0-9]++)\\s*(?<paren>\\g<inner>?+|(\\(\\g<inner>\\g<paren>\\g<inner>\\))++)(?=\\s*[A-Za-z#_][A-Za-z_0-9]*\\s*)",
+					"match": "(?<inner>([^\\(\\)\"]++|\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\")*){0}([A-Za-z#_][A-Za-z_0-9]++)\\s*(?<paren>\\g<inner>?+|(\\(\\g<inner>\\g<paren>\\g<inner>\\))++)(?=\\s*[A-Za-z#_][A-Za-z_0-9]*\\s*)",
 					"captures": {
 						"4": { "name": "keyword.control.macro.princess" },
 						"5": {
@@ -162,7 +164,7 @@
 			"end": "(?=\\n|})|;"
 		},
 		"const-decl": {
-			"begin": "\\s*(export)?\\s*(import)?\\s*(const)\\s*",
+			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*(const)\\b",
 			"end": "\\n|;",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
@@ -197,7 +199,7 @@
 			]
 		},
 		"var-decl": {
-			"begin": "\\s*(export)?\\s*(import)?\\s*((var)|(let))\\s*",
+			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*((var)|(let))\\b",
 			"end": "\\n|;",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
@@ -234,7 +236,7 @@
 		},
 		"import": {
 			"name": "meta.import.princess",
-			"begin": "\\s*(export)?\\s*(import)\\s*",
+			"begin": "\\b(export)?\\b\\s*(import)\\b",
 			"end": "\\n|;",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
@@ -242,7 +244,7 @@
 			},
 			"patterns": [
 				{
-					"match": "\\b(as)\\s*([A-Za-z_][0-9A-Za-z_]++)\\b",
+					"match": "\\b(as)\\b([A-Za-z_][0-9A-Za-z_]++)\\b",
 					"captures": {
 						"1": { "name": "keyword.control.as.princess" },
 						"2": { "name": "entity.name.namespace.princess" }
@@ -252,6 +254,31 @@
 					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
 				}, {
 					"include": "#comma-separator"
+				}, {
+					"include": "#comment"
+				}
+			]
+		},
+		"from-import": {
+			"name": "meta.import.princess",
+			"begin": "\\b(from)\\b",
+			"end": "\\n|;",
+			"beginCaptures": {
+				"1": {"name": "keyword.control.from.princess"}
+			},
+			"patterns": [
+				{
+					"name": "keyword.control.import.princess",
+					"begin": "\\b(import)\\b",
+					"end": "(?=\\n|;)",
+					"patterns": [
+						{ "include": "#identifier" },
+						{ "include": "#comma-separator" }, 
+						{ "include": "#comment" }
+					]
+				}, {
+					"name": "entity.name.namespace.princess",
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
 				}, {
 					"include": "#comment"
 				}
@@ -268,7 +295,7 @@
 					"end": "(?=[\\)}\\],\\n])"
 				}, {
 					"name": "meta.struct.princess",
-					"begin": "\\s*(struct)\\s*",
+					"begin": "\\b(struct)\\b",
 					"end": "(?<=})",
 					"beginCaptures": {
 						"1": {"name": "storage.type.princess"}
@@ -303,7 +330,7 @@
 					]
 				}, {
 					"name": "meta.interface.princess",
-					"begin": "\\s*(interface)\\s*",
+					"begin": "\\b(interface)\\b",
 					"end": "(?<=})",
 					"beginCaptures": {
 						"1": {"name": "storage.type.princess"}
@@ -325,7 +352,7 @@
 					]
 				}, {
 					"name": "meta.enum.princess",
-					"begin": "\\s*(enum)\\s*",
+					"begin": "\\b(enum)\\b",
 					"end": "(?<=})",
 					"beginCaptures": {
 						"1": {"name": "storage.type.princess"}
@@ -376,14 +403,37 @@
 					],
 					"end": "\\]"
 				}, {
-					"include": "#keywords"
+					"begin": "\\b(def)?\\b\\s*\\(",
+					"beginCaptures": {
+						"0": { "name": "keyword.other.funref.princess" }
+					},
+					"patterns": [
+						{"include": "#type"},
+						{"include": "#comma-separator"}
+					],
+					"end": "\\)"
+				}, {
+					"begin": "->\\s*\\(",
+					"patterns": [
+						{"include": "#type"},
+						{"include": "#comma-separator"}
+					],
+					"end": "\\)"
+				}, {
+					"begin": "->",
+					"patterns": [
+						{"include": "#type"}
+					],
+					"end": "(?=[\\n\\)},])"
+				}, {
+ 					"include": "#keywords"
 				}, {
 					"include": "#type-name"
 				}
 			]
 		},
 		"type-ref": {
-			"begin": "\\s*(type)\\s*",
+			"begin": "\\b(type)\\b",
 			"beginCaptures": {
 				"0": { "name": "keyword.other.type.princess" }
 			},
@@ -403,7 +453,7 @@
 		},
 		"type-decl": {
 			"name": "meta.typedecl.princess",
-			"begin": "\\s*(export)?\\s*(import)?\\s*(type)\\s*",
+			"begin": "\\b(export)?\\b(import)?\\b(type)\\b",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},

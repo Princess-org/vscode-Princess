@@ -269,7 +269,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.import.princess",
-					"begin": "\\b(import)\\b",
+					"begin": "\\b(export)\\b",
 					"end": "(?=\\n|;)",
 					"patterns": [
 						{ "include": "#identifier" },

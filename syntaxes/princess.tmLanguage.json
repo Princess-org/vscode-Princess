@@ -73,13 +73,6 @@
 			"name": "keyword.control.princess",
 			"match": "#[A-Za-z_][0-9A-Za-z_]*+"
 		},
-		"function-arguments": {
-			"begin": "\\(",
-			"patterns": [
-				{"include": "#expression"}
-			],
-			"end": "\\)"
-		},
 		"function-decl": {
 			"name": "meta.function.princess",
 			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*(def)\\b",
@@ -92,12 +85,7 @@
 				{
 					"match": "(?<inner>([^\\(\\)\"]++|\"[^\"\\\\]*(\\\\.[^\"\\\\]*)*\")*){0}([A-Za-z#_][A-Za-z_0-9]++)\\s*(?<paren>\\g<inner>?+|(\\(\\g<inner>\\g<paren>\\g<inner>\\))++)(?=\\s*[A-Za-z#_][A-Za-z_0-9]*\\s*)",
 					"captures": {
-						"4": { "name": "keyword.control.macro.princess" },
-						"5": {
-							"patterns": [
-								{"include": "#function-arguments"}
-							]
-						}
+						"4": { "name": "keyword.control.macro.princess" }
 					}
 				}, {
 					"include": "#pragma"
@@ -111,6 +99,17 @@
 					"name": "meta.function.arguments.princess",
 					"begin": "\\(",
 					"patterns": [
+						{ "include": "#comment" },
+						{
+							"begin": "\\b(type)\\b",
+							"beginCaptures": {
+								"1": { "name": "storage.type.princess" }
+							},
+							"end": "(?=,|\\))",
+							"patterns": [
+								{ "include": "#type" }
+							]
+						},
 						{ 
 							"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b(?=\\s*:)",
 							"captures": {

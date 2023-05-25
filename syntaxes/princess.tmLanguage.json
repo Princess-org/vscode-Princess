@@ -20,6 +20,7 @@
 			"patterns": [
 				{ "include": "#pragma" },
 				{ "include": "#blocks" },
+				{ "include": "#cast" },
 				{ "include": "#comment" },
 				{ "include": "#type-ref" },
 				{ "include": "#function-call" },
@@ -34,20 +35,48 @@
 			]
 		},
 		"identifier": {
-			"match": "\\b(([A-Za-z_][0-9A-Za-z_]*)(::))*([A-Za-z_][0-9A-Za-z_]*)\\b",
+			"match": "\\b((([A-Za-z_][0-9A-Za-z_]*)(::))*)([A-Za-z_][0-9A-Za-z_]*)\\b",
 			"captures": {
-				"2": {"name": "entity.name.namespace.princess"},
-				"3": {"name": "punctuation.other.doublecolon.princess"},
-				"4": {"name": "variable.name.princess"}
+				"1": { 
+					"patterns": [
+						{ 
+							"match": "[A-Za-z_][0-9A-Za-z_]*",
+							"name": "entity.name.namespace"
+						}, {
+							"match": "::",
+							"name": "punctuation.other.doublecolon.princess"
+						}
+					]
+				},
+				"4": {"name": "punctuation.other.doublecolon.princess"},
+				"5": {"name": "variable.name.princess"}
 			}
 		},
+		"cast": {
+			"begin": "!",
+			"end": "(?=\\n|;|,)",
+			"patterns": [
+				{"include": "#comment"},
+				{"include": "#type"}
+			]
+		},
 		"function-call": {
-			"begin": "\\b(([A-Za-z_][0-9A-Za-z_]*)(::))*([A-Za-z_][0-9A-Za-z_]*)\\b\\(",
+			"begin": "\\b((([A-Za-z_][0-9A-Za-z_]*)(::))*)([A-Za-z_][0-9A-Za-z_]*)\\b\\(",
 			"end": "\\)",
 			"beginCaptures": {
-				"2": {"name": "entity.name.namespace.princess"},
-				"3": {"name": "punctuation.other.doublecolon.princess"},
-				"4": {"name": "entity.name.function.princess"}
+				"1": { 
+					"patterns": [
+						{ 
+							"match": "[A-Za-z_][0-9A-Za-z_]*",
+							"name": "entity.name.namespace"
+						}, {
+							"match": "::",
+							"name": "punctuation.other.doublecolon.princess"
+						}
+					]
+				},
+				"4": {"name": "punctuation.other.doublecolon.princess"},
+				"5": {"name": "entity.name.function.princess"}
 			},
 			"patterns": [
 				{"include": "#expression"},
@@ -75,11 +104,12 @@
 		},
 		"function-decl": {
 			"name": "meta.function.princess",
-			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*(def)\\b",
+			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*(implicit)?\\b\\s*(def)\\b",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},
-				"3": {"name": "storage.type.princess"}
+				"3": {"name": "storage.modifier.implicit.princess"},
+				"4": {"name": "storage.type.princess"}
 			},
 			"patterns": [
 				{
@@ -199,7 +229,7 @@
 		},
 		"var-decl": {
 			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*((var)|(let))\\b",
-			"end": "\\n|;",
+			"end": "\\n|;|(?=in)",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},
@@ -482,7 +512,7 @@
 					"begin": "{",
 					"end": "}",
 					"patterns": [
-						{"include": "#expression"}
+						{"include": "#statement"}
 					]
 				}, {
 					"begin": "\\[", 
@@ -519,7 +549,7 @@
 				"match": "\\b(struct|enum|var|let|const|def|interface|weak_ref)\\b"
 			}, {
 				"name": "keyword.control.princess",
-				"match": "\\b(if|else|while|for|in|return|loop|switch|case|go_to|break|continue|defer|assert|as)\\b"
+				"match": "\\b(if|else|while|for|in|return|yield|loop|switch|case|go_to|break|continue|defer|assert|as)\\b"
 			}, {
 				"name": "keyword.control.share.princess",
 				"match": "\\b(export|import)\\b"

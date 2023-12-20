@@ -337,7 +337,7 @@
 					"name": "meta.type.reference.princess",
 					"begin": "\\s*&\\s*",
 					"patterns": [{"include": "#type"}],
-					"end": "(?=[\\)}\\],\\n])"
+					"end": "(?=[\\)}\\],\\n;=+-/])"
 				}, {
 					"name": "meta.struct.princess",
 					"begin": "\\b(struct)\\b",
@@ -392,6 +392,7 @@
 							"patterns": [
 								{"include": "#comment"},
 								{"include": "#function-decl"},
+								{"include": "#var-decl"},
 								{"include": "#keyword"}
 							]
 						}

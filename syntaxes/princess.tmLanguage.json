@@ -329,6 +329,45 @@
 				}
 			]
 		},
+		"struct-decl": {
+			"name": "meta.struct.princess",
+			"begin": "\\b(struct)\\b",
+			"end": "(?<=})",
+			"beginCaptures": {
+				"1": {"name": "storage.type.princess"}
+			},
+			"patterns": [
+				{
+					"include": "#comment"
+				}, {
+					"include": "#pragma"
+				}, {
+					"begin": "{",
+					"end": "}",
+					"patterns": [
+						{
+							"include": "#comment"
+						}, {
+							"begin": ":",
+							"beginCaptures": {
+								"1": {"name": "punctuation.other.colon.princess"}
+							},
+							"patterns": [
+								{"include": "#type"}
+							],
+							"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};])"
+						}, {
+							"include": "#keyword"
+						}, {
+							"include": "#struct-decl"
+						}, {
+							"name": "variable.other.property.princess",
+							"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
+						}
+					]
+				}
+			]
+		},
 		"type": {
 			"patterns": [
 				{
@@ -339,41 +378,7 @@
 					"patterns": [{"include": "#type"}],
 					"end": "(?=[\\)}\\],\\n;=+-/])"
 				}, {
-					"name": "meta.struct.princess",
-					"begin": "\\b(struct)\\b",
-					"end": "(?<=})",
-					"beginCaptures": {
-						"1": {"name": "storage.type.princess"}
-					},
-					"patterns": [
-						{
-							"include": "#comment"
-						}, {
-							"include": "#pragma"
-						}, {
-							"begin": "{",
-							"end": "}",
-							"patterns": [
-								{
-									"include": "#comment"
-								}, {
-									"begin": ":",
-									"beginCaptures": {
-										"1": {"name": "punctuation.other.colon.princess"}
-									},
-									"patterns": [
-										{"include": "#type"}
-									],
-									"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};])"
-								}, {
-									"include": "#keyword"
-								}, {
-									"name": "variable.other.property.princess",
-									"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
-								}
-							]
-						}
-					]
+					"include": "#struct-decl"
 				}, {
 					"name": "meta.interface.princess",
 					"begin": "\\b(interface)\\b",

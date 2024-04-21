@@ -246,7 +246,7 @@
 		},
 		"var-decl": {
 			"begin": "\\b(export)?\\b\\s*(import)?\\b\\s*((var)|(let))\\b",
-			"end": "\\n|;|(?=in)",
+			"end": "((?<!\\s*,\\s*)\\n)|;|(?=in)",
 			"beginCaptures": {
 				"1": {"name": "keyword.control.share.princess"},
 				"2": {"name": "keyword.control.share.princess"},
@@ -267,7 +267,7 @@
 					"patterns": [
 						{"include": "#type"}
 					],
-					"end": "(?=\\n|=)"
+					"end": "(?=[\\n,;=])"
 				}, {
 					"begin": "=",
 					"beginCaptures": { 

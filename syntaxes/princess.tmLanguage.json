@@ -7,6 +7,7 @@
 	"repository": {
 		"statement": {
 			"patterns": [
+				{ "include": "#yield-from" },
 				{ "include": "#control-stmt" },
 				{ "include": "#type-decl" },
 				{ "include": "#const-decl" },
@@ -219,7 +220,7 @@
 			"patterns": [
 				{
 					"name": "variable.other.constant",
-					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b"
 				}, {
 					"include": "#pragma"
 				}, {
@@ -255,7 +256,7 @@
 			"patterns": [
 				{
 					"name": "variable.other.princess",
-					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b"
 				}, {
 					"include": "#pragma"
 				}, {
@@ -289,20 +290,32 @@
 			},
 			"patterns": [
 				{
-					"match": "\\b(as)\\b([A-Za-z_][0-9A-Za-z_]++)\\b",
+					"match": "\\b(as)\\b([A-Za-z_][0-9A-Za-z_]*+)\\b",
 					"captures": {
 						"1": { "name": "keyword.control.as.princess" },
 						"2": { "name": "entity.name.namespace.princess" }
 					}
 				}, {
 					"name": "entity.name.namespace.princess",
-					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b"
 				}, {
 					"include": "#comma-separator"
 				}, {
 					"include": "#comment"
 				}
 			]
+		},
+		"yield-from": {
+			"name": "meta.yield.princess",
+			"begin": "\\b(yield)\\b\\s*(from)\\b",
+			"beginCaptures": {
+				"1": { "name": "keyword.control.yield.princess" },
+				"2": { "name": "keyword.control.from.princess" }
+			},
+			"patterns": [
+				{ "include": "#expression" }
+			],
+			"end": "(?=[;\\}\\n])"
 		},
 		"from-import": {
 			"name": "meta.import.princess",
@@ -323,7 +336,7 @@
 					]
 				}, {
 					"name": "entity.name.namespace.princess",
-					"match": "\\b([A-Za-z_][0-9A-Za-z_]++)\\b"
+					"match": "\\b([A-Za-z_][0-9A-Za-z_]*+)\\b"
 				}, {
 					"include": "#comment"
 				}
@@ -348,6 +361,15 @@
 						{
 							"include": "#comment"
 						}, {
+							"match": "\\b(const)\\b([^\\n;\\}]*)",
+							"captures": {
+								"0": {
+									"patterns": [
+										{"include": "#const-decl"}
+									]
+								}
+							}
+						}, {
 							"begin": ":",
 							"beginCaptures": {
 								"1": {"name": "punctuation.other.colon.princess"}
@@ -355,11 +377,20 @@
 							"patterns": [
 								{"include": "#type"}
 							],
-							"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};])"
+							"end": "(?=([A-Za-z_][0-9A-Za-z_]*\\s*:)|[};]|(const))"
 						}, {
 							"include": "#keyword"
 						}, {
 							"include": "#struct-decl"
+						}, {
+							"match": "([^\\n;\\}:]++)(?!:)",
+							"captures": {
+								"1": {
+									"patterns": [
+										{ "include": "#type" }
+									]
+								}
+							}
 						}, {
 							"name": "variable.other.property.princess",
 							"match": "\\b([A-Za-z_][0-9A-Za-z_]*)\\b"
@@ -376,7 +407,7 @@
 					"name": "meta.type.reference.princess",
 					"begin": "\\s*&\\s*",
 					"patterns": [{"include": "#type"}],
-					"end": "(?=[\\)}\\],\\n;=+-/])"
+					"end": "(?=[\\){}\\],\\n;=+-/])"
 				}, {
 					"include": "#struct-decl"
 				}, {
@@ -424,7 +455,7 @@
 									"include": "#keyword"
 								}, {
 									"name": "variable.other.enummember.princess",
-									"match": "[A-Za-z_][0-9A-Za-z_]++"
+									"match": "[A-Za-z_][0-9A-Za-z_]*+"
 								}, {
 									"begin": "=",
 									"patterns": [

@@ -516,7 +516,7 @@
 			]
 		},
 		"type-ref": {
-			"begin": "\\b(type)\\b",
+			"begin": "\\b((?<!\\.)type)\\b",
 			"beginCaptures": {
 				"0": { "name": "keyword.other.type.princess" }
 			},
